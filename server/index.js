@@ -10,6 +10,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors());
 
+app.use(cors({
+  origin: '*', 
+  methods: ['GET', 'POST'],
+  allowedHeaders: "*",
+}));
+
 app.get("/", (req,res)=>{
   res.send("Hello");
 });
