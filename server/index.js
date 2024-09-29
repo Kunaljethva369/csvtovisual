@@ -8,8 +8,6 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.use(cors());
-
 app.use(cors({
   origin: '*', 
   methods: ['GET', 'POST'],
@@ -17,7 +15,7 @@ app.use(cors({
 }));
 
 app.get("/", (req,res)=>{
-  res.send("Hello");
+  res.send("Hello World");
 });
 
 app.post('/upload', upload.single('csvfile'), (req, res) => {
