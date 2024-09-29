@@ -6,7 +6,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 3001;
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors());
 
@@ -15,12 +15,28 @@ app.get("/", (req,res)=>{
 });
 
 app.post('/upload', upload.single('csvfile'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No file uploaded.');
+  }
   const results = [];
-  fs.createReadStream(req.file.path)
+  // fs.createReadStream(req.file.path)
+  //   .pipe(csv())
+  //   .on('data', (data) => results.push(data))
+  //   .on('end', () => {
+  //     res.json(results);
+  //   });
+  const fileBuffer = req.file.buffer.toString(); // Convert Buffer to string
+
+  // Process the CSV data from memory
+  const csvStream = require('stream').Readable.from(fileBuffer);
+  csvStream
     .pipe(csv())
     .on('data', (data) => results.push(data))
     .on('end', () => {
-      res.json(results);
+      res.json(results); // Return parsed CSV data
+    })
+    .on('error', (error) => {
+      res.status(500).send('Error processing file');
     });
 });
 
