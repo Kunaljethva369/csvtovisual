@@ -3,6 +3,7 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 const cors = require('cors');
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -19,6 +20,8 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
     });
 });
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log('Server running on http://localhost:3001');
 });
+
+module.exports = app;

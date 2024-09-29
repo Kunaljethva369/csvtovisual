@@ -1,8 +1,8 @@
 import React,{ useState } from 'react';
 import axios from 'axios';
-import FileUpload from './FileUpload';
-import ChartSelector from './ChartSelector';
-import Visualization from './Visualization';
+import FileUpload from './Components/FileUpload';
+import ChartSelector from './Components/ChartSelector';
+import Visualization from './Components/Visualization';
 import './App.css';
 
 const App = () => {
