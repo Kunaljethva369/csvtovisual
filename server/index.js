@@ -20,6 +20,10 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
     });
 });
 
+app.get("/", (req,res)=>{
+  console.log("Hello");
+})
+
 app.listen(PORT, () => {
   console.log('Server running on http://localhost:3001');
 });
