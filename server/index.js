@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const PORT = process.env.PORT || 3001;
-const all_router = require('./api/upload');
+const all_router = require('./api/routes');
 
 const app = express();
 
