@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 .input-field {
@@ -90,7 +90,6 @@
 }
 
 .chart-container {
-  margin-top: 40px;
   width: 100%;
 }
 
