@@ -43,6 +43,10 @@ app.post("/users", (req,res)=>{
   res.send(req.params);
 })
 
+app.get("/getUsers", (req,res)=>{
+  res.send("Hello User");
+})
+
 
 // app.listen(PORT, () => {
 //   console.log('Server running on http://localhost:3001');
