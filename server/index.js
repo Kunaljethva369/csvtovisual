@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const csv = require('csv-parser');
-const fs = require('fs');
 const cors = require('cors');
 const PORT = process.env.PORT || 3001;
 
@@ -23,14 +22,7 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
     return res.status(400).send('No file uploaded.');
   }
   const results = [];
-  // fs.createReadStream(req.file.path)
-  //   .pipe(csv())
-  //   .on('data', (data) => results.push(data))
-  //   .on('end', () => {
-  //     res.json(results);
-  //   });
-  const fileBuffer = req.file.buffer.toString(); // Convert Buffer to string
-
+  const fileBuffer = req.file.buffer.toString();
   // Process the CSV data from memory
   const csvStream = require('stream').Readable.from(fileBuffer);
   csvStream
@@ -45,8 +37,8 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log('Server running on http://localhost:3001');
-});
+// app.listen(PORT, () => {
+//   console.log('Server running on http://localhost:3001');
+// });
 
 module.exports = app;
