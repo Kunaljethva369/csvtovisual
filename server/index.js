@@ -8,10 +8,13 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: '*', 
+  origin: ['http://localhost:3000', 'https://csvtovisual.netlify.app'], 
   methods: ['GET', 'POST'],
-  allowedHeaders: "*",
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  credentials: true,
 }));
+
+app.options('*', cors()); 
 
 app.get("/", (req,res)=>{
   res.send("Hello World");
@@ -37,8 +40,8 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
 });
 
 
-// app.listen(PORT, () => {
-//   console.log('Server running on http://localhost:3001');
-// });
+app.listen(PORT, () => {
+  console.log('Server running on http://localhost:3001');
+});
 
 module.exports = app;
