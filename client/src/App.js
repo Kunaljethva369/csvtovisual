@@ -10,6 +10,7 @@ const App = () => {
   const [selectedMetrics,setSelectedMetrics] = useState([]);
   const [chartType,setChartType] = useState('line');
   const [loader,setLoader] = useState(false);
+  const [xAxisKey,setXAxisKey] = useState('');
 
   const handleFileUpload = async (file) => {
     const formData = new FormData();
@@ -24,37 +25,55 @@ const App = () => {
       },
     });
 
-    const cleanedData = cleanData(response.data);
+    const { cleanedData,firstColumnKey } = cleanData(response.data);
     setCsvData(cleanedData);
     setSelectedMetrics(getAvailableMetrics(cleanedData));
-
+    setXAxisKey(firstColumnKey);
     setLoader(false);
   };
-
+  let firstKey = '';
   const cleanData = (data) => {
-    return data
-      .filter(row => row.Name)
-      .map((row) => {
-        const cleanedRow = { Name: row.Name };
+    const firstKey = Object.keys(data[0] || {})[0];
+    return {
+      cleanedData: data
+        .filter(row => row[firstKey])
+        .map((row) => {
+          const cleanedRow = { [firstKey]: row[firstKey] };
 
-        Object.keys(row).forEach((key) => {
-          if (key !== 'Name' && !isNaN(row[key]) && row[key] !== '') {
-            cleanedRow[key] = parseFloat(row[key]);
-          }
-        });
-        return cleanedRow;
-      });
+          Object.keys(row).forEach((key) => {
+            if (key !== firstKey && row[key] !== '') {
+              let value = row[key];
+
+              if (key === "Jobs Available" || key === "Average Salary") {
+                value = value.replace(/[\$,]/g,'');
+              }
+
+              if (!isNaN(value)) {
+                cleanedRow[key] = parseFloat(value);
+              }
+            }
+          });
+          return cleanedRow;
+        }),
+      firstColumnKey: firstKey,
+    };
   };
 
   const getAvailableMetrics = (data) => {
-    const metrics = Object.keys(data[0] || {}).filter(key => key !== 'Name' && data.some(row => !isNaN(row[key])));
+    const metrics = Object.keys(data[0] || {}).filter((key) => {
+      if (key === firstKey || key === "") return false;
+      return data.some((row) => {
+        const cleanedValue = row[key].toString().replace(/[\$,]/g, '');
+        return !isNaN(cleanedValue) && cleanedValue !== "";
+      });
+    });
     return metrics;
   };
 
   return (
     <>
       <div className={loader ? 'loader' : 'loader hide'}>
-        <img src="https://cdn.dribbble.com/users/1523313/screenshots/13671653/media/7c52f9d4b1117aa12f3bf9f9c3b9e1aa.gif"/>
+        <img src="https://cdn.dribbble.com/users/1523313/screenshots/13671653/media/7c52f9d4b1117aa12f3bf9f9c3b9e1aa.gif" />
       </div>
       <div className="container">
         <h1>Real-Time Data Visualization</h1>
@@ -69,7 +88,7 @@ const App = () => {
           />
         )}
         {!loader && csvData.length > 0 && (
-          <Visualization csvData={csvData} selectedMetrics={selectedMetrics} chartType={chartType} />
+          <Visualization csvData={csvData} selectedMetrics={selectedMetrics} chartType={chartType} xAxisKey={xAxisKey} />
         )}
       </div>
     </>
